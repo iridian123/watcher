@@ -1,4 +1,5 @@
 import os
+import shutil
 
 fixed_code = """import logging
 from telegram import Update
