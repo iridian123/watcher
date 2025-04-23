@@ -60,7 +60,7 @@ async def list_following(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = load_data()
     if user_id in data and data[user_id]:
         accounts = "\n".join([f"@{u}" for u in data[user_id]])
-        await update.message.reply_text(f"📋 Ты следишь за:
+await update.message.reply_text(f"📋 Ты следишь за:\n{accounts}")
 {accounts}")
     else:
         await update.message.reply_text("Ты пока ни за кем не следишь.")
