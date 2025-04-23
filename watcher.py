@@ -1,5 +1,4 @@
-# Подготовка чистой версии watcher.py без ApplicationBuilder
-clean_watcher_code = """import requests
+import requests
 from bs4 import BeautifulSoup
 import json
 import time
@@ -60,9 +59,9 @@ def check_updates():
             if added or removed:
                 message = f"📡 Изменения в подписках @{username}:"
                 if added:
-                    message += "\\n➕ Подписался на:\\n" + "\\n".join(f"@{u}" for u in added)
+                    message += "\n➕ Подписался на:\n" + "\n".join(f"@{u}" for u in added)
                 if removed:
-                    message += "\\n➖ Отписался от:\\n" + "\\n".join(f"@{u}" for u in removed)
+                    message += "\n➖ Отписался от:\n" + "\n".join(f"@{u}" for u in removed)
                 bot.send_message(chat_id=chat_id, text=message)
 
             save_current(username, current)
@@ -72,8 +71,3 @@ if __name__ == "__main__":
     while True:
         check_updates()
         time.sleep(30)
-"""
-
-clean_watcher_path = "/mnt/data/watcher.py"
-with open(clean_watcher_path, "w") as f:
-    f.write(clean_watcher_code)
