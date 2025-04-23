@@ -1,4 +1,6 @@
-import logging
+import os
+
+fixed_code = """import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import json
@@ -59,9 +61,8 @@ async def list_following(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
     data = load_data()
     if user_id in data and data[user_id]:
-        accounts = "\n".join([f"@{u}" for u in data[user_id]])
-await update.message.reply_text(f"📋 Ты следишь за:\n{accounts}")
-{accounts}")
+        accounts = "\\n".join([f"@{u}" for u in data[user_id]])
+        await update.message.reply_text(f"📋 Ты следишь за:\\n{accounts}")
     else:
         await update.message.reply_text("Ты пока ни за кем не следишь.")
 
@@ -77,3 +78,21 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""
+
+project_path = "/mnt/data/twitter-follow-watcher-fixed"
+os.makedirs(f"{project_path}/storage", exist_ok=True)
+
+with open(f"{project_path}/bot.py", "w") as f:
+    f.write(fixed_code)
+
+with open(f"{project_path}/requirements.txt", "w") as f:
+    f.write("python-telegram-bot==20.3\nrequests\nbeautifulsoup4\n")
+
+with open(f"{project_path}/Procfile", "w") as f:
+    f.write("worker: python bot.py\n")
+
+with open(f"{project_path}/README.md", "w") as f:
+    f.write("# Telegram X Following Watcher Bot\nБот для отслеживания чужих подписок в Twitter (X).\n")
+
+shutil.make_archive(project_path, 'zip', project_path)
