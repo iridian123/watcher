@@ -1,11 +1,10 @@
-import os
-import shutil
-
-fixed_code = """import logging
+# Пересоздаем архив с улучшенной версией bot.py (с логами)
+fixed_with_logs = """import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import json
 import os
+import sys
 
 DATA_FILE = "storage/data.json"
 
@@ -68,24 +67,30 @@ async def list_following(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Ты пока ни за кем не следишь.")
 
 def main():
-    import os
     TOKEN = os.getenv("BOT_TOKEN")
+    if not TOKEN:
+        print("❌ BOT_TOKEN not found. Exiting.")
+        sys.exit(1)
+
+    print("✅ BOT_TOKEN found. Starting bot...")
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("add", add))
     app.add_handler(CommandHandler("remove", remove))
     app.add_handler(CommandHandler("list", list_following))
+
+    print("🤖 Bot is polling...")
     app.run_polling()
 
 if __name__ == "__main__":
     main()
 """
 
-project_path = "/mnt/data/twitter-follow-watcher-fixed"
+project_path = "/mnt/data/twitter-follow-watcher-logged"
 os.makedirs(f"{project_path}/storage", exist_ok=True)
 
 with open(f"{project_path}/bot.py", "w") as f:
-    f.write(fixed_code)
+    f.write(fixed_with_logs)
 
 with open(f"{project_path}/requirements.txt", "w") as f:
     f.write("python-telegram-bot==20.3\nrequests\nbeautifulsoup4\n")
@@ -94,6 +99,6 @@ with open(f"{project_path}/Procfile", "w") as f:
     f.write("worker: python bot.py\n")
 
 with open(f"{project_path}/README.md", "w") as f:
-    f.write("# Telegram X Following Watcher Bot\nБот для отслеживания чужих подписок в Twitter (X).\n")
+    f.write("# Telegram X Following Watcher Bot\n")
 
 shutil.make_archive(project_path, 'zip', project_path)
